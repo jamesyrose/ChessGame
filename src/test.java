@@ -6,6 +6,7 @@ public class test {
     /**
      * @param args the command line arguments
      */
+	
     public static void main(String[] args) 
     {
         validMoves = new ArrayList<>();
@@ -17,6 +18,13 @@ public class test {
         board.display();
         
         while (true) {
+        	if (!board.kingExists()) {
+        		String winner = board.getWinner();
+        		Win winWind = new Win();
+        		winWind.winFrame(winner);
+        		break;
+        	}
+
         	if (board.buttonPressed()) {
         		ChessLabel currPiece = board.pressedPiece();
         		if (currPiece.pieceColor().equals(turn)) {
@@ -72,78 +80,60 @@ public class test {
 		} else if (selectedPiece.pieceName().equals("king")) {
 			king(selectedPiece, board);
 		}
-
     }
     
     private static void pawn(ChessLabel piece, Board board) {
     	int x = piece.getxPos();
 		int y = piece.getyPos();
 		boolean canGo = true;
-
-		if (piece.pieceColor().equals("black")) {
-			int maxMove = 1;
-			if (y == 6) {
-				maxMove = 2;
-			}
-			for (int i=1; i <= maxMove ; i++) {
-				ChessLabel newPiece = board.pieceAt(x,  y - i);
-				if (newPiece.pieceName().equals("blank") && canGo) { 
-					newPiece.changeBackgroundColor();
-					validMoves.add(newPiece);
-				}else {
-					canGo = false;
-				}
-			}
-			// Kill moves (diagonals)
-			if (x < 7) {
-				ChessLabel newPiece = board.pieceAt(x + 1,  y - 1);
-				if (newPiece.pieceName().equals("white")) { 
-					newPiece.changeBackgroundColor();
-					killMoves.add(newPiece);
-				}
-			}
-
-			if (x > 0) {
-				ChessLabel newPiece = board.pieceAt(x - 1,  y - 1);
-				if (newPiece.pieceName().equals("white")) { 
-					newPiece.changeBackgroundColor();
-					killMoves.add(newPiece);
-				}
-			}
-
-		}else if (piece.pieceColor().equals("white")) {
-			canGo = true;
-			int maxMove = 1;
-			if (y == 1) {
-				maxMove = 2;
-			}
-			for (int i=1; i <= maxMove ; i++) {
-				ChessLabel newPiece = board.pieceAt(x,  y + i);
-				if (newPiece.pieceName().equals("blank") && canGo) { 
-					newPiece.changeBackgroundColor();
-					validMoves.add(newPiece);
-				}else {
-					canGo = false;
-				}
-			}
-			canGo = true;
-			// Kill moves (diagonals)
-			if (x < 7) {
-				ChessLabel newPiece = board.pieceAt(x + 1,  y + 1);
-				if (newPiece.pieceName().equals("black")) { 
-					newPiece.changeBackgroundColor();
-					killMoves.add(newPiece);
-				}
-			}
-
-			if (x > 0) {
-				ChessLabel newPiece = board.pieceAt(x - 1,  y + 1);
-				if (newPiece.pieceName().equals("black")) { 
-					newPiece.changeBackgroundColor();
-					killMoves.add(newPiece);
-				}
-			}
+    	String pieceColor = piece.pieceColor();
+		int[] directions = {1, 0};
+		if (y == 6 || y == 1) {
+			directions[1] = 2;
 		}
+		
+    	canGo = true;
+		for(int move: directions) {
+			x = piece.getxPos();
+        	y = piece.getyPos();
+
+        	if (pieceColor.equals("black")) {
+        		move *= -1;
+        	}
+    		y += move;
+    		if (x < 8 && x > -1 && y < 8 && y > -1) {
+    			ChessLabel newPiece = board.pieceAt(x, y);
+    			if (newPiece.pieceName().equals("blank") && canGo){
+					newPiece.changeBackgroundColor();
+    				validMoves.add(newPiece);
+    			}else { 
+    				canGo = false;
+    			}
+    		}else {
+    			canGo = false;
+    		}
+    	}
+		int[][] moves = {{1,1}, {-1, 1}};
+		for (int[] move: moves) {
+			x = piece.getxPos();
+        	y = piece.getyPos();
+        	int dx = move[0];
+        	int dy = move[1];
+        	if (pieceColor.equals("black")) {
+        		dy *= -1;
+        	}
+        	x += dx;
+    		y += dy;
+    		if (x < 8 && x > -1 && y < 8 && y > -1) {
+    			ChessLabel newPiece = board.pieceAt(x, y);
+    			if (!newPiece.pieceName().equals("blank") && 
+    					!newPiece.pieceColor().equals(pieceColor)){
+					newPiece.changeBackgroundColor();
+    				killMoves.add(newPiece);
+    			}
+    		}
+		}
+		
     }
 
     private static void knight(ChessLabel piece, Board board) {

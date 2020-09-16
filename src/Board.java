@@ -4,8 +4,6 @@ import javax.swing.JButton;
 
 
 public class Board extends JFrame {
-
-
    //Initialize arrays to hold panels and images of the board
 
     private static ChessLabel[] labels = new ChessLabel[] {
@@ -83,6 +81,28 @@ public class Board extends JFrame {
     	return null;
     }
     
+    public boolean kingExists() {
+    	int cnt = 0;
+    	for(ChessLabel label: labels) {
+    		if (label.pieceName().equals("king")) {
+    			cnt++;
+    		}
+    	}
+    	if (cnt == 2) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public String getWinner() {
+    	for(ChessLabel label: labels) {
+    		if (label.pieceName().equals("king")) {
+    			return label.pieceColor();
+    		}
+    	}
+    	return null;
+    }
+    
     public static boolean newPiecePressed(ChessLabel pressedLabel) {
     	for(ChessLabel label: labels) {
     		if (!label.equals(pressedLabel) && label.isPressed()) {
@@ -121,12 +141,20 @@ public class Board extends JFrame {
     }
     
     public static void movePieces(ChessLabel firstPiece, ChessLabel secondPiece) {
+    	int yPos = secondPiece.getyPos();
     	int firstIdx = firstPiece.getxPos() + firstPiece.getyPos() * 8;
     	int secondIdx = secondPiece.getxPos() + secondPiece.getyPos() * 8;
     	labels[firstIdx] = secondPiece;
     	labels[firstIdx].set(firstPiece.getxPos(), firstPiece.getyPos());
     	labels[secondIdx] = firstPiece;
     	labels[secondIdx].set(secondPiece.getxPos(), secondPiece.getyPos());
+    	// if a pawn gets to the other side
+    	System.out.println(yPos);
+    	if (yPos == 0 || yPos == 7 && firstPiece.pieceName().equals("pawn")) {
+    		labels[secondIdx].setQueen();
+    	}
+    	
+    	
     	unpressAll();
     }
 } // class Board

@@ -43,6 +43,17 @@ public class ChessLabel extends JButton {
         this.initializePiece();
     }
     
+    void setQueen() {
+    	String key = "\u2655";
+    	if (this.color.equals("black")) {
+    		key = "\u265B";
+    	}
+    	setText(key);
+        this.pressed = false;
+        this.name = key;
+        this.initializePiece();
+    }
+    
     void set(int idx, int row) {
 		setFont(font);
 		setOpaque(true);
