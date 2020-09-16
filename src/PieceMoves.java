@@ -1,88 +1,23 @@
 import java.util.ArrayList;
 
-public class test {
+public class PieceMoves {
 	private static ArrayList<ChessLabel> validMoves;
 	private static ArrayList<ChessLabel> killMoves;
-    /**
-     * @param args the command line arguments
-     */
 	
-    public static void main(String[] args) 
-    {
+	public PieceMoves() {
         validMoves = new ArrayList<>();
         killMoves = new ArrayList<>();
-        String turn = "white";
-    	Board board = new Board();
-
-       
-        board.display();
-        
-        while (true) {
-        	if (!board.kingExists()) {
-        		String winner = board.getWinner();
-        		Win winWind = new Win();
-        		winWind.winFrame(winner);
-        		break;
-        	}
-
-        	if (board.buttonPressed()) {
-        		ChessLabel currPiece = board.pressedPiece();
-        		if (currPiece.pieceColor().equals(turn)) {
-            		highlightMoves(board);
-            		validMoveOrChange(board, currPiece);
-            		if (turn.equals("black")) {
-            			turn = "white";
-            		} else if (turn.equals("white")) {
-            			turn = "black";
-            		}
-        		} else { 
-        			board.unpressAll();
-        			board.display();
-        		}
-        	}
-        }
-    }
-    
-    private static void validMoveOrChange(Board board, ChessLabel currentPiece) {
-    	ChessLabel newPiece = null;
-    	while (true) {
-    		if (board.newPiecePressed(currentPiece)) {
-    			newPiece = board.newPressedPiece(currentPiece);
-    			break;
-    		}
-    	}
-		if (validMoves.contains(newPiece)) {
-    		board.movePieces(currentPiece, newPiece);
-    		board.display();
-    	} else if (killMoves.contains(newPiece)) {
-    		newPiece.clearPiece();
-    		board.movePieces(currentPiece, newPiece);
-    		board.display();
-    	}
-		killMoves.clear();
-		validMoves.clear();
-		board.unpressAll();
-		board.display();
-    }
-    
-    private static void highlightMoves(Board board) {
-		ChessLabel selectedPiece = board.pressedPiece();
-		if (selectedPiece.pieceName().equals("knight")){
-			knight(selectedPiece, board);
-		} else if (selectedPiece.pieceName().equals("pawn")) {
-			pawn(selectedPiece, board);
-		} else if (selectedPiece.pieceName().equals("bishop")) {
-			bishop(selectedPiece, board);
-		} else if (selectedPiece.pieceName().equals("rook")) {
-			rook(selectedPiece, board);
-		} else if (selectedPiece.pieceName().equals("queen")) {
-			queen(selectedPiece, board);
-		} else if (selectedPiece.pieceName().equals("king")) {
-			king(selectedPiece, board);
-		}
-    }
-    
-    private static void pawn(ChessLabel piece, Board board) {
+	}
+	
+	public ArrayList<ChessLabel> validMoves(){
+		return validMoves;
+	}
+	
+	public  ArrayList<ChessLabel> killMoves(){
+		return killMoves;
+	}
+	
+    public static void pawn(ChessLabel piece, Board board) {
     	int x = piece.getxPos();
 		int y = piece.getyPos();
 		boolean canGo = true;
@@ -136,7 +71,7 @@ public class test {
 		
     }
 
-    private static void knight(ChessLabel piece, Board board) {
+    public static void knight(ChessLabel piece, Board board) {
     	// knights can move 2x1
     	int x = piece.getxPos();
 		int y = piece.getyPos();
@@ -186,7 +121,7 @@ public class test {
 		
     }
 
-    private static void bishop(ChessLabel piece, Board board){
+    public static void bishop(ChessLabel piece, Board board){
     	int x;
     	int y;
     	boolean canGo; 
@@ -221,7 +156,7 @@ public class test {
 
     }
     
-    private static void rook(ChessLabel piece, Board board){
+    public static void rook(ChessLabel piece, Board board){
     	int x;
     	int y;
     	boolean canGo; 
@@ -256,7 +191,7 @@ public class test {
 
     }
     
-    private static void queen(ChessLabel piece, Board board){
+    public static void queen(ChessLabel piece, Board board){
     	int x;
     	int y;
     	boolean canGo; 
@@ -292,7 +227,7 @@ public class test {
 
     }
     
-    private static void king(ChessLabel piece, Board board) {
+    public static void king(ChessLabel piece, Board board) {
     	int x;
     	int y;
     	int[][] direction = {{1,1}, {-1, -1}, {-1, 1}, {1,-1},
@@ -317,4 +252,5 @@ public class test {
     		}
     	}
     }
+
 }
